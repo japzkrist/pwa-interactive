@@ -17,6 +17,8 @@
     function drawStuff() {
         var centerX = canvas.width / 2 - 125;
         var centerY = canvas.height / 2 + 125;
+        var lastFunc = "";
+        var lastColor = "";
         
         function randomCoord() {
             return {
@@ -113,12 +115,23 @@
 
         window.drawLetter = drawLetter(randomCoord(), randomLetter());
 
-        function touch(e) {  
+        function touchclick(e) {  
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            let rect = canvas.getBoundingClientRect();
+            if (e.type == "touchstart" && e.touches.length > 1) {
+                var x = e.touches[0].pageX - rect.left ;
+                var y = e.touches[0].pageY - rect.top ;
+            } else if (e.type == "touchmove") {
+                var x = e.touches[0].pageX - rect.left ;
+                var y = e.touches[0].pageY - rect.top ;
+            } else {
+                var x = e.clientX - rect.left ;
+                var y = e.clientY - rect.top ;  
+            }
             playAudio("./audio/index.mp3")
             context.clearRect(0, 0, canvas.width, canvas.height);
-            let rect = canvas.getBoundingClientRect();
-            let x = e.clientX - rect.left ;
-            let y = e.clientY - rect.top ;
+            
             drawShape({
                 x: x,
                 y: y
@@ -165,15 +178,13 @@
 
         document.addEventListener('keydown', press);
 
-        document.addEventListener('click', touch);
-        
-        document.addEventListener('contextmenu', function(e){
+        document.addEventListener('click', touchclick);
 
-          // Stop the context menu
-          e.preventDefault();
-          e.stopPropagation();
-          touch(e);
-        });
+        document.addEventListener('touchstart', touchclick);
+
+        document.addEventListener('touchmove', touchclick);
+
+        document.addEventListener('contextmenu', touchclick);
     }
 
 })();
