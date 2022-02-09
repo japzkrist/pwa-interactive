@@ -7,6 +7,10 @@ body {
     background: #fefefe;
 }
 
+body {
+  overscroll-behavior-y: contain;
+}
+
 canvas {
     display: block;
 }
